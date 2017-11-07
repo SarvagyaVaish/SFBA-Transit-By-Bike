@@ -1,6 +1,6 @@
-import util
 import os
-from util import Node, Connection
+import scripts.util as util
+from scripts.util import Node, Connection
 
 
 def create_path(path_rel_to_this_file):
@@ -50,11 +50,11 @@ def create_connections(nodes, trip_id):
     number_of_stops = len(trip_sequence.keys())
     for i in range(1, number_of_stops):
         # start node
-        start_node = filter(lambda n: n.id == trip_sequence[i]['stop_id'], nodes)[0]
+        start_node = list(filter(lambda n: n.id == trip_sequence[i]['stop_id'], nodes))[0]
         start_time = trip_sequence[i]['time']
 
         # end node
-        end_node = filter(lambda n: n.id == trip_sequence[i+1]['stop_id'], nodes)[0]
+        end_node = list(filter(lambda n: n.id == trip_sequence[i+1]['stop_id'], nodes))[0]
         end_time = trip_sequence[i+1]['time']
 
         # append

@@ -2,7 +2,7 @@ import csv
 import copy
 from math import sin, cos, sqrt, atan2, radians
 from contextlib import contextmanager
-from maps_client import get_biking_time
+from scripts.maps_client import get_biking_time
 
 BIKE_SPEED_M_PER_MIN = 250.
 ALL_NODES_DB = {}
@@ -64,7 +64,7 @@ def biking_duration_bw_nodes(node1, node2):
     duration = get_biking_time(start_point, end_point)
 
     if duration is None:
-        print "WARN: fallback to simple biking duration"
+        # print "WARN: fallback to simple biking duration"
         # Fallback on rough estimate using avg speed
         dist = straight_line_dist_bw_nodes(node1, node2)
         duration = max(5, int(dist / BIKE_SPEED_M_PER_MIN))
@@ -115,10 +115,7 @@ def setup_DB(all_nodes):
     all_nodes_db = {}
     for n in all_nodes:
         all_nodes_db[n.id] = n
-    store_all_nodes_db(all_nodes_db)
 
-
-def store_all_nodes_db(all_nodes_db):
     global ALL_NODES_DB
     ALL_NODES_DB = all_nodes_db
 
@@ -166,7 +163,7 @@ class Node:
     @classmethod
     def get_all_nodes(cls, make_copy=True):
         if make_copy:
-            return copy.deepcopy(ALL_NODES_DB.values())
+            return copy.deepcopy(list(ALL_NODES_DB.values()))
         else:
             return ALL_NODES_DB.values()
 
@@ -192,11 +189,11 @@ class Connection:
     def __init__(self, start_node_id, start_time_str, end_node_id, end_time_str, mode):
         self.start_node_id = start_node_id
         self.end_node_id = end_node_id
-        if isinstance(start_time_str, basestring):
+        if isinstance(start_time_str, str):
             self.start_time = time_str_to_int(start_time_str)
         else:
             self.start_time = start_time_str
-        if isinstance(end_time_str, basestring):
+        if isinstance(end_time_str, str):
             self.end_time = time_str_to_int(end_time_str)
         else:
             self.end_time = end_time_str

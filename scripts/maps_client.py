@@ -1,8 +1,8 @@
 import os
 import urllib
-import urllib2
+from urllib.request import urlopen
 import json
-from api_keys import GOOGLE_MAPS_KEY
+from scripts.api_keys import GOOGLE_MAPS_KEY
 
 NUMBER_OF_REQUESTS = 0
 NUMBER_OF_CACHES = 0
@@ -54,11 +54,12 @@ class Memoize:
 
     @classmethod
     def print_stats(cls):
-        global NUMBER_OF_CACHES
-        global NUMBER_OF_REQUESTS
-        print "Number of requests", NUMBER_OF_REQUESTS
-        print "Number of cache hits", NUMBER_OF_CACHES
-        print "Number in local file", len(Memoize.load_memo().keys())
+        pass
+        # global NUMBER_OF_CACHES
+        # global NUMBER_OF_REQUESTS
+        # print "Number of requests", NUMBER_OF_REQUESTS
+        # print "Number of cache hits", NUMBER_OF_CACHES
+        # print "Number in local file", len(Memoize.load_memo().keys())
 
 
 @Memoize
@@ -76,7 +77,7 @@ def get_biking_time(start_point, end_point):
 
     url_values = urllib.urlencode(params)
     full_url = url + '?' + url_values
-    response = urllib2.urlopen(full_url)
+    response = urlopen(full_url)
 
     response_text = response.read()
     json_data = json.loads(response_text)
@@ -90,11 +91,11 @@ def get_biking_time(start_point, end_point):
             assert len(json_data['routes']) == 1  # guaranteed if alternatives = 0
             assert len(json_data['routes'][0]['legs']) == 1  # guaranteed when no waypoints are specified
             duration = json_data['routes'][0]['legs'][0]['duration']['value'] / 60
-    else:
-        print "ERROR: response status not OK"
-        print repr(full_url)
-        print json_data
-        print ""
+    # else:
+    #     print "ERROR: response status not OK"
+    #     print repr(full_url)
+    #     print json_data
+    #     print ""
 
     return duration
 

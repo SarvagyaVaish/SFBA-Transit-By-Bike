@@ -1,11 +1,7 @@
-import pprint
+from scripts.caltrain import CaltrainModel
+from scripts.util import create_bike_connections, time_str_to_int, time_int_to_str
+from scripts.util import Node, setup_DB, biking_duration_bw_nodes, heuristic_time_to_destination
 
-from caltrain import CaltrainModel
-from util import create_bike_connections, time_str_to_int, time_int_to_str
-from util import Node, setup_DB, biking_duration_bw_nodes, heuristic_time_to_destination
-
-DEBUG = False
-# DEBUG = True
 
 NUMBER_OF_SOLUTIONS = 1
 
@@ -54,26 +50,14 @@ def find_routes(departure_coordinate, arrival_coordinate, departure_time):
     solutions = {}
 
     while len(open_set) > 0:
-        if DEBUG:
-            print "\nOpen set:"
-            pprint.pprint(open_set)
-
         # Get next node to explore
         current_node = Node.cheapest_node(
             open_set,
             h_func=heuristic_time_to_destination(Node.find_node_by_id("arrival"))
         )
 
-        if DEBUG:
-            print "\nCurrent node:"
-            print current_node
-
         open_set.remove(current_node)
         closed_set.append(current_node)
-
-        if DEBUG:
-            print "\nOpen set:"
-            pprint.pprint(open_set)
 
         # Check for goal
         if current_node.id == final_node_id:
@@ -98,10 +82,6 @@ def find_routes(departure_coordinate, arrival_coordinate, departure_time):
                 solution_node = solution_node.from_node
 
             solutions[solution_number] = solution_str
-
-            if DEBUG:
-                print "\n\n--\n\n"
-                print solution_str
 
             if solution_number < NUMBER_OF_SOLUTIONS:
                 continue
@@ -162,9 +142,6 @@ def find_routes(departure_coordinate, arrival_coordinate, departure_time):
 
             current_node.connections += pruned_connections
 
-        if DEBUG:
-            print "\nNew connections:"
-
         # Iterate over connections and add nodes
         new_nodes = []
         for connection in current_node.connections:
@@ -183,10 +160,6 @@ def find_routes(departure_coordinate, arrival_coordinate, departure_time):
             bike_penalty = 1.0 if connection.mode == "bike" else 1.0
             waiting_penalty = 1.0 if current_node.first_dest_node else 1.0
             new_node.cost = current_node.cost + time_moving * bike_penalty + time_waiting * waiting_penalty
-
-            if DEBUG:
-                print connection
-                print "time_waiting", time_waiting, "time_moving", time_moving, "cost", new_node.cost
 
             new_node.time_waiting = time_waiting
             new_node.time_moving = time_moving
@@ -213,14 +186,5 @@ def find_routes(departure_coordinate, arrival_coordinate, departure_time):
                 unique_open_set.append(curr_node)
                 prev_node = curr_node
         open_set = unique_open_set
-
-        if DEBUG:
-            print "\nOpen set:"
-            pprint.pprint(open_set)
-            print "\n-----"
-            raw_input()
-
-    if DEBUG:
-        print "opened nodes:", len(open_set)
 
     return solutions
