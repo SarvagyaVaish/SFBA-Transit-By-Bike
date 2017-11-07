@@ -46,7 +46,7 @@ def find_routes(departure_coordinate, arrival_coordinate, departure_time):
     open_set = [first_node]
 
     closed_set = []
-    solution_number = 0
+    solutions_count = 0
     solutions = {}
 
     while len(open_set) > 0:
@@ -61,29 +61,23 @@ def find_routes(departure_coordinate, arrival_coordinate, departure_time):
 
         # Check for goal
         if current_node.id == final_node_id:
-            solution_number += 1
-            solution_str = "Solution #: {}\n".format(solution_number)
-
+            current_solution_json = []
             solution_node = current_node
             wait_at_previous_node = 0
+
             while solution_node is not None:
                 wait_at_current_node = wait_at_previous_node
                 wait_at_previous_node = solution_node.time_waiting
-                solution_str += "{} {} : {} {}\n".format(
-                    solution_node.name,
-                    time_int_to_str(solution_node.arrival_time),
-                    time_int_to_str(solution_node.arrival_time + wait_at_current_node),
-                    solution_node.from_mode
-                )
+                solution_node.departure_time = solution_node.arrival_time + wait_at_current_node
+                current_solution_json.append(solution_node.json_representation())
 
-                if solution_node.from_mode == "bike":
-                    solution_str += "\t{} for {} mins\n".format(solution_node.from_mode, solution_node.time_moving)
-
+                # Go to next node in solution
                 solution_node = solution_node.from_node
 
-            solutions[solution_number] = solution_str
+            solutions[solutions_count] = current_solution_json
 
-            if solution_number < NUMBER_OF_SOLUTIONS:
+            solutions_count += 1
+            if solutions_count < NUMBER_OF_SOLUTIONS:
                 continue
             else:
                 break
@@ -151,7 +145,7 @@ def find_routes(departure_coordinate, arrival_coordinate, departure_time):
             new_node.from_node = current_node
             new_node.from_mode = connection.mode
 
-            if current_node.id == "departure":  # Mark new node as first "real" node, aka first destination node to.
+            if current_node.id == "departure":  # Mark new node as first "real" node, aka first destination node.
                 new_node.first_dest_node = True
 
             # Cost

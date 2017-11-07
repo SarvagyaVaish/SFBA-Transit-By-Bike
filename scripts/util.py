@@ -23,9 +23,9 @@ def time_str_to_int(time_str):
 
 def time_int_to_str(time_int):
     elms = []
-    elms.append(time_int % 60)
+    elms.append(int(time_int % 60))
     time_int /= 60
-    elms.append(time_int % 60)
+    elms.append(int(time_int % 60))
     elms.reverse()
 
     s = ""
@@ -134,13 +134,14 @@ class Node:
         self.lon = lon
         self.connections = []
         self.arrival_time = 0
+        self.departure_time = 0
 
         # for A* search
         self.cost = float("inf")
         self.from_node = None
         self.from_mode = None
-        self.time_waiting = 0
-        self.time_moving = 0
+        self.time_waiting = 0  # Time spent waiting at the parent node, before starting to move towards this node.
+        self.time_moving = 0  # Time spent moving from parent to this node.
         self.first_dest_node = False
 
     def __repr__(self):
@@ -152,6 +153,19 @@ class Node:
             self.cost,
             self.from_mode,
         )
+
+    def json_representation(self):
+        return dict(
+                id=self.id,
+                name=self.name,
+                arrival_time=self.arrival_time,
+                departure_time=self.departure_time,
+                arrival_time_str=time_int_to_str(self.arrival_time),
+                departure_time_str=time_int_to_str(self.departure_time),
+                waiting_time=self.time_waiting,
+                moving_time=self.time_moving,
+                arrival_mode=self.from_mode,
+            )
 
     @classmethod
     def find_node_by_id(cls, id, make_copy=True):
