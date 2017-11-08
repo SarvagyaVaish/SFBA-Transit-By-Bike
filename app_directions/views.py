@@ -17,7 +17,7 @@ def get_lat_lon_tuple(coordinate_str):
 
 
 def index(request):
-	return HttpResponse("Hi Kurt!")
+	return HttpResponseRedirect("/directions/search")
 
 
 def api(request):

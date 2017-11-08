@@ -9,7 +9,7 @@ urlpatterns = [
 	url(r'^api$', views.api, name='api'),
 
 	# GUI
-	url(r'^$', views.search, name='search'),
+	url(r'^$', views.index, name='index'),
 	url(r'^search$', views.search, name='search'),
 	url(r'^result$', views.result, name='result'),
 ]
