@@ -1,7 +1,107 @@
-<form action="{% url 'app_directions:result' %}" method="post">
-{% csrf_token %}
-	<input type="text" name="input_from_loc"><br>
-	<input type="text" name="input_to_loc"><br>
-	<input type="time" name="input_start_time"><br>
-	<input type="submit" value="Find Directions" />
-</form>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+
+<div class="container">
+
+	<div class="jumbotron">
+		<h1 class="display-3">SFBA Transit on Bike!</h1>
+		<p class="lead">
+			Google Maps-like
+			<span class="badge badge-secondary">Transit Directions</span>
+			with the option to
+			<span class="badge badge-secondary">Bike</span>
+			between transfers.
+		</p>
+	</div>
+
+	<form action="{% url 'app_directions:result' %}" method="post">
+		{% csrf_token %}
+		<input type="hidden" id="input-from-loc" name="input_from_loc">
+		<input type="hidden" id="input-to-loc" name="input_to_loc">
+
+		<div class="row justify-content-center">
+			<div class="col col-lg-6 col-md-8 col-sm-10">
+				<div class="form-group">
+					<label for="from-ac-input">Start location</label>
+					<input id="from-ac-input" type="text" placeholder="Enter an address within the bay area" class="form-control">
+				</div>
+			</div>
+		</div>
+
+		<div class="row justify-content-center">
+			<div class="col col-lg-6 col-md-8 col-sm-10">
+				<div class="form-group">
+					<label for="to-ac-input">Destination location</label>
+					<input id="to-ac-input" type="text" placeholder="Enter an address within the bay area" class="form-control">
+				</div>
+			</div>
+		</div>
+
+		<div class="row justify-content-center">
+			<div class="col col-lg-6 col-md-8 col-sm-10">
+				<div class="form-group">
+					<input type="time" name="input_start_time" class="form-control">
+				</div>
+			</div>
+		</div>
+
+		<div class="row justify-content-center">
+			<div class="col col-lg-6 col-md-8 col-sm-10">
+				<button type="submit" class="btn btn-primary" style="width:100%;">Find Directions</button>
+			</div>
+		</div>
+	</form>
+
+</div>
+
+
+<script>
+	function initMap() {
+		var sfba_bounds = new google.maps.LatLngBounds(
+			new google.maps.LatLng(36.605724, -123.420542),
+			new google.maps.LatLng(38.452733, -121.886408)
+		);
+
+		var options = {
+			bounds: sfba_bounds,
+			strictBounds: true
+		};
+
+
+		// Setup from field
+		var from_input = document.getElementById('from-ac-input');
+		var from_autocomplete = new google.maps.places.Autocomplete(from_input, options);
+		from_autocomplete.addListener('place_changed', function() {
+			var place = from_autocomplete.getPlace();
+			if (!place.geometry) {
+				// User entered the name of a Place that was not suggested and
+				// pressed the Enter key, or the Place Details request failed.
+				// window.alert("No details available for input: '" + place.name + "'");
+				return;
+			}
+
+			full_address = place.formatted_address;
+			from_coordinates = place.geometry.location.lat().toString() + "," + place.geometry.location.lng().toString();
+			document.getElementById('input-from-loc').value = from_coordinates
+		});
+
+
+		// Setup to field
+		var to_input = document.getElementById('to-ac-input');
+		var to_autocomplete = new google.maps.places.Autocomplete(to_input, options);
+		to_autocomplete.addListener('place_changed', function() {
+			var place = to_autocomplete.getPlace();
+			if (!place.geometry) {
+				// User entered the name of a Place that was not suggested and
+				// pressed the Enter key, or the Place Details request failed.
+				// window.alert("No details available for input: '" + place.name + "'");
+				return;
+			}
+
+			full_address = place.formatted_address;
+			to_coordinates = place.geometry.location.lat().toString() + "," + place.geometry.location.lng().toString();
+			document.getElementById('input-to-loc').value = to_coordinates
+		});
+	}
+</script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAicUsRkvBEBA_fjLbllm2iplPHe-ybbPM&libraries=places&callback=initMap" async defer></script>
