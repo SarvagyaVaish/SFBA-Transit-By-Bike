@@ -1,5 +1,5 @@
 import os
-import urllib
+import urllib.parse
 from urllib.request import urlopen
 import json
 from scripts.api_keys import GOOGLE_MAPS_KEY
@@ -75,7 +75,7 @@ def get_biking_time(start_point, end_point):
         'key': GOOGLE_MAPS_KEY,
     }
 
-    url_values = urllib.urlencode(params)
+    url_values = urllib.parse.urlencode(params)
     full_url = url + '?' + url_values
     response = urlopen(full_url)
 
