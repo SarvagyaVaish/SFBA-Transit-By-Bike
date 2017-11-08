@@ -2,6 +2,9 @@ from scripts.caltrain import CaltrainModel
 from scripts.util import create_bike_connections, time_str_to_int, time_int_to_str
 from scripts.util import Node, setup_DB, biking_duration_bw_nodes, heuristic_time_to_destination
 
+import logging
+logger = logging.getLogger(__name__)
+
 
 NUMBER_OF_SOLUTIONS = 1
 
@@ -56,11 +59,14 @@ def find_routes(departure_coordinate, arrival_coordinate, departure_time):
             h_func=heuristic_time_to_destination(Node.find_node_by_id("arrival"))
         )
 
+        logger.warn("\n----\n\nCurrent node: " + str(current_node))
+
         open_set.remove(current_node)
         closed_set.append(current_node)
 
         # Check for goal
         if current_node.id == final_node_id:
+            logger.warn("\nFound solution: " + str(current_node))
             current_solution_json = []
             solution_node = current_node
             wait_at_previous_node = 0
@@ -89,7 +95,9 @@ def find_routes(departure_coordinate, arrival_coordinate, departure_time):
             # Find connections from current node
             relevant_connections = []
             for connection in all_connections:
+                # logger.warn("checking connection: " + str(connection.start_node_id + " == " + str(current_node.id)))
                 if connection.start_node_id == current_node.id:
+                    # logger.warn("-- accepted")
                     relevant_connections.append(connection)
 
             # Find connections that are still possible
@@ -136,6 +144,10 @@ def find_routes(departure_coordinate, arrival_coordinate, departure_time):
 
             current_node.connections += pruned_connections
 
+        logger.warn("\nNew connections: ")
+        for connection in current_node.connections:
+            logger.warn(str(connection))
+
         # Iterate over connections and add nodes
         new_nodes = []
         for connection in current_node.connections:
@@ -160,6 +172,10 @@ def find_routes(departure_coordinate, arrival_coordinate, departure_time):
 
             new_nodes.append(new_node)
 
+        logger.warn("\nNew nodes")
+        for new_node in new_nodes:
+            logger.warn(str(new_node))
+
         # Add new node to open set
         open_set += new_nodes
 
@@ -173,12 +189,16 @@ def find_routes(departure_coordinate, arrival_coordinate, departure_time):
             accept = False
             if prev_node is None:
                 accept = True
-            elif prev_node.name != curr_node.name or prev_node.arrival_time != curr_node.arrival_time:
+            elif prev_node.name != curr_node.name or prev_node.direction != curr_node.direction or prev_node.arrival_time != curr_node.arrival_time:
                 accept = True
 
             if accept:
                 unique_open_set.append(curr_node)
                 prev_node = curr_node
         open_set = unique_open_set
+
+        logger.warn("\nOpen set")
+        for node in open_set:
+            logger.warn(str(node))
 
     return solutions

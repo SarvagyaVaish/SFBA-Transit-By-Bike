@@ -214,11 +214,12 @@ class Connection:
         self.mode = mode
 
     def __repr__(self):
-        # return "{} {} --> {} {}".format(
-        #     self.start_node, time_int_to_str(self.start_time),
-        #     self.end_node, time_int_to_str(self.end_time))
-        return "Start: {} \t@{} \t\t\t{}\n  End: {} \t@{}".format(
-            Node.find_node_by_id(self.start_node_id), time_int_to_str(self.start_time),
-            self.mode,
-            Node.find_node_by_id(self.end_node_id), time_int_to_str(self.end_time),
+        # return "Start: {} \t@{} \t\t\t{}\n  End: {} \t@{}".format(
+        #     Node.find_node_by_id(self.start_node_id), time_int_to_str(self.start_time),
+        #     self.mode,
+        #     Node.find_node_by_id(self.end_node_id), time_int_to_str(self.end_time),
+        # )
+
+        return "Start: {} \t@{}".format(
+            self.start_node_id, time_int_to_str(self.start_time)
         )
