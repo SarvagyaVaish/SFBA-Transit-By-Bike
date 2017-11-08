@@ -33,8 +33,21 @@ def api(request):
 
 
 def search(request):
-	return HttpResponse("search")
+	return render(request, 'app_directions/search_form.html')
 
 
 def result(request):
-	return HttpResponse("result")
+	s = ""
+
+	s += "from: "
+	s += request.POST["input_from_loc"]
+	s += "<br>"
+
+	s += "to: "
+	s += request.POST["input_to_loc"]
+	s += "<br>"
+
+	s += "start_time: "
+	s += request.POST["input_start_time"]
+	s += "<br>"
+	return HttpResponse(s)

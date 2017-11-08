@@ -1,0 +1,7 @@
+<form action="{% url 'app_directions:result' %}" method="post">
+{% csrf_token %}
+	<input type="text" name="input_from_loc"><br>
+	<input type="text" name="input_to_loc"><br>
+	<input type="time" name="input_start_time"><br>
+	<input type="submit" value="Find Directions" />
+</form>
