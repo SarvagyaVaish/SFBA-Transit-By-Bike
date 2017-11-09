@@ -81,14 +81,44 @@ def result(request):
 			start_time
 		)
 
-	result = {
+	context = {
 		"input" : {
 			"from_coordinate" : get_lat_lon_tuple(from_coordinate),
 			"to_coordinate" : get_lat_lon_tuple(to_coordinate),
 			"start_time" : start_time,
 		},
-		"solutions" : solutions,
+		"solution_count" : len(solutions),
 	}
 
-	return JsonResponse(result)
-	# return HttpResponse("Correct")
+	# Check if solutions exist
+	if len(solutions) == 0:
+		messages.error(request, 'No route found.')
+		return render(request, 'app_directions/results_page.html', context)
+
+	# Format solution for view
+	context["solution"] = []
+	solution = solutions[0]
+	for node in solution:
+		# Add data for Connection
+		if node["id"] != "departure":
+			connection_data = {
+				"type" : "connection",
+				"name" : node["arrival_mode"],
+				"time" : node["moving_time"],
+			}
+			context["solution"].append(connection_data)
+
+		# Add data for Node
+		if node["arrival_time"] == node["departure_time"]:
+			time_data = node["arrival_time_str"]
+		else:
+			time_data = node["arrival_time_str"] + " : " + node["departure_time_str"]
+
+		node_data = {
+			"type" : "node",
+			"name" : node["name"],
+			"time" : time_data,
+		}
+		context["solution"].append(node_data)
+
+	return render(request, 'app_directions/results_page.html', context)

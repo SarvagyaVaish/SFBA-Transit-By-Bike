@@ -80,6 +80,7 @@ def find_routes(departure_coordinate, arrival_coordinate, departure_time):
                 # Go to next node in solution
                 solution_node = solution_node.from_node
 
+            current_solution_json.reverse()
             solutions[solutions_count] = current_solution_json
 
             solutions_count += 1
