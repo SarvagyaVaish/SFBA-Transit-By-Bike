@@ -15,50 +15,58 @@
 
 <div class="container">
 
-	<div class="jumbotron">
-		<h1 class="display-3">Bay Area Transit with a Bike</h1>
-		<p class="lead">
-			Google Maps-like
-			<span class="badge badge-secondary">Transit Directions</span>
-			with connection timings that account for
-			<span class="badge badge-secondary">Biking</span>
-			between transfers.
-		</p>
-	</div>
+	<section class="jumbotron text-center" style="background-color:#fff;">
+		<div class="container">
+			<h1 class="jumbotron-heading">Transit with Bike</h1>
+			<div class="row justify-content-center">
+				<div class="col col-lg-6 col-md-8 col-sm-10">
+					<p class="lead text-muted">Google Maps-like directions that assume you can bike between transit stations.</p>
+				</div>
+			</div>
+		</div>
+	</section>
 
 	{% if messages %}
 		{% for m in messages %}
 			{% if m.tags == "error" %}
-				<div class="alert alert-danger" role="alert">
-					{{ m }}
+				<div class="row justify-content-center">
+					<div class="col col-lg-6 col-md-8 col-sm-10">
+						<div class="alert alert-danger" role="alert">
+							{{ m }}
+						</div>
+					</div>
 				</div>
 			{% endif %}
 		{% endfor %}
 	{% endif %}
 
+	{# From autocomplete field #}
+	<div class="row justify-content-center">
+		<div class="col col-lg-6 col-md-8 col-sm-10">
+			<div class="form-group">
+				<label for="from-ac-input">Start location</label>
+				<input id="from-ac-input" type="text" placeholder="Enter an address within the bay area" class="form-control">
+			</div>
+		</div>
+	</div>
+
+	{# To autocomplete field #}
+	<div class="row justify-content-center">
+		<div class="col col-lg-6 col-md-8 col-sm-10">
+			<div class="form-group">
+				<label for="to-ac-input">Destination location</label>
+				<input id="to-ac-input" type="text" placeholder="Enter an address within the bay area" class="form-control">
+			</div>
+		</div>
+	</div>
+
+	{# Form #}
 	<form action="{% url 'app_directions:result' %}" method="post">
 		{% csrf_token %}
 		<input type="hidden" id="input-from-loc" name="input_from_loc">
 		<input type="hidden" id="input-to-loc" name="input_to_loc">
 
-		<div class="row justify-content-center">
-			<div class="col col-lg-6 col-md-8 col-sm-10">
-				<div class="form-group">
-					<label for="from-ac-input">Start location</label>
-					<input id="from-ac-input" type="text" placeholder="Enter an address within the bay area" class="form-control">
-				</div>
-			</div>
-		</div>
-
-		<div class="row justify-content-center">
-			<div class="col col-lg-6 col-md-8 col-sm-10">
-				<div class="form-group">
-					<label for="to-ac-input">Destination location</label>
-					<input id="to-ac-input" type="text" placeholder="Enter an address within the bay area" class="form-control">
-				</div>
-			</div>
-		</div>
-
+		{# Time field #}
 		<div class="row justify-content-center">
 			<div class="col col-lg-6 col-md-8 col-sm-10">
 				<div class="form-group">
@@ -68,6 +76,7 @@
 			</div>
 		</div>
 
+		{# Submit button #}
 		<div class="row justify-content-center">
 			<div class="col col-lg-6 col-md-8 col-sm-10">
 				<button type="submit" class="btn btn-primary" style="width:100%;">Find Directions</button>
@@ -128,10 +137,10 @@
 
 
 		// Setup time field
-		var d = new Date(),        
+		var d = new Date(),
         h = d.getHours(),
         m = d.getMinutes();
-	    if(h < 10) h = '0' + h; 
+	    if(h < 10) h = '0' + h;
 	    if(m < 10) m = '0' + m;
 	    document.getElementById('input-start-time').value = h + ":" + m
 	}
