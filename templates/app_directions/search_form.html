@@ -1,30 +1,6 @@
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+{% extends "./base.html" %}
 
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
-
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-109408825-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-109408825-1');
-</script>
-
-
-<div class="container">
-
-	<section class="jumbotron text-center" style="background-color:#fff;">
-		<div class="container">
-			<h1 class="jumbotron-heading">Transit with Bike</h1>
-			<div class="row justify-content-center">
-				<div class="col col-lg-6 col-md-8 col-sm-10">
-					<p class="lead text-muted">Google Maps-like directions that assume you can bike between transit stations.</p>
-				</div>
-			</div>
-		</div>
-	</section>
+{% block content %}
 
 	{% if messages %}
 		{% for m in messages %}
@@ -84,66 +60,65 @@
 		</div>
 	</form>
 
-</div>
+	<script>
+		function initMap() {
+			var sfba_bounds = new google.maps.LatLngBounds(
+				new google.maps.LatLng(36.605724, -123.420542),
+				new google.maps.LatLng(38.452733, -121.886408)
+			);
+
+			var options = {
+				bounds: sfba_bounds,
+				strictBounds: true
+			};
 
 
-<script>
-	function initMap() {
-		var sfba_bounds = new google.maps.LatLngBounds(
-			new google.maps.LatLng(36.605724, -123.420542),
-			new google.maps.LatLng(38.452733, -121.886408)
-		);
+			// Setup from field
+			var from_input = document.getElementById('from-ac-input');
+			var from_autocomplete = new google.maps.places.Autocomplete(from_input, options);
+			from_autocomplete.addListener('place_changed', function() {
+				var place = from_autocomplete.getPlace();
+				if (!place.geometry) {
+					// User entered the name of a Place that was not suggested and
+					// pressed the Enter key, or the Place Details request failed.
+					// window.alert("No details available for input: '" + place.name + "'");
+					return;
+				}
 
-		var options = {
-			bounds: sfba_bounds,
-			strictBounds: true
-		};
-
-
-		// Setup from field
-		var from_input = document.getElementById('from-ac-input');
-		var from_autocomplete = new google.maps.places.Autocomplete(from_input, options);
-		from_autocomplete.addListener('place_changed', function() {
-			var place = from_autocomplete.getPlace();
-			if (!place.geometry) {
-				// User entered the name of a Place that was not suggested and
-				// pressed the Enter key, or the Place Details request failed.
-				// window.alert("No details available for input: '" + place.name + "'");
-				return;
-			}
-
-			full_address = place.formatted_address;
-			from_coordinates = place.geometry.location.lat().toString() + "," + place.geometry.location.lng().toString();
-			document.getElementById('input-from-loc').value = from_coordinates
-		});
+				full_address = place.formatted_address;
+				from_coordinates = place.geometry.location.lat().toString() + "," + place.geometry.location.lng().toString();
+				document.getElementById('input-from-loc').value = from_coordinates
+			});
 
 
-		// Setup to field
-		var to_input = document.getElementById('to-ac-input');
-		var to_autocomplete = new google.maps.places.Autocomplete(to_input, options);
-		to_autocomplete.addListener('place_changed', function() {
-			var place = to_autocomplete.getPlace();
-			if (!place.geometry) {
-				// User entered the name of a Place that was not suggested and
-				// pressed the Enter key, or the Place Details request failed.
-				// window.alert("No details available for input: '" + place.name + "'");
-				return;
-			}
+			// Setup to field
+			var to_input = document.getElementById('to-ac-input');
+			var to_autocomplete = new google.maps.places.Autocomplete(to_input, options);
+			to_autocomplete.addListener('place_changed', function() {
+				var place = to_autocomplete.getPlace();
+				if (!place.geometry) {
+					// User entered the name of a Place that was not suggested and
+					// pressed the Enter key, or the Place Details request failed.
+					// window.alert("No details available for input: '" + place.name + "'");
+					return;
+				}
 
-			full_address = place.formatted_address;
-			to_coordinates = place.geometry.location.lat().toString() + "," + place.geometry.location.lng().toString();
-			document.getElementById('input-to-loc').value = to_coordinates
-		});
+				full_address = place.formatted_address;
+				to_coordinates = place.geometry.location.lat().toString() + "," + place.geometry.location.lng().toString();
+				document.getElementById('input-to-loc').value = to_coordinates
+			});
 
 
-		// Setup time field
-		var d = new Date(),
-        h = d.getHours(),
-        m = d.getMinutes();
-	    if(h < 10) h = '0' + h;
-	    if(m < 10) m = '0' + m;
-	    document.getElementById('input-start-time').value = h + ":" + m
-	}
-</script>
+			// Setup time field
+			var d = new Date(),
+	        h = d.getHours(),
+	        m = d.getMinutes();
+		    if(h < 10) h = '0' + h;
+		    if(m < 10) m = '0' + m;
+		    document.getElementById('input-start-time').value = h + ":" + m
+		}
+	</script>
 
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAicUsRkvBEBA_fjLbllm2iplPHe-ybbPM&libraries=places&callback=initMap" async defer></script>
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAicUsRkvBEBA_fjLbllm2iplPHe-ybbPM&libraries=places&callback=initMap" async defer></script>
+
+{% endblock %}

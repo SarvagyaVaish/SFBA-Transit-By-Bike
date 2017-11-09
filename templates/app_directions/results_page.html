@@ -1,0 +1,62 @@
+{% extends "./base.html" %}
+
+{% block content %}
+
+	{% if messages %}
+		{% for m in messages %}
+			{% if m.tags == "error" %}
+				<div class="row justify-content-center">
+					<div class="col col-lg-6 col-md-8 col-sm-10">
+						<div class="alert alert-danger" role="alert">
+							{{ m }}
+						</div>
+					</div>
+				</div>
+			{% endif %}
+		{% endfor %}
+	{% endif %}
+
+	{% if solution_count > 0 %}
+		<div class="row justify-content-center">
+			<div class="col col-lg-4 col-md-6 col-sm-8">
+				<div class="list-group">
+
+					{% for item in solution %}
+
+						{% if item.type == "node" %}
+							<div class="list-group-item flex-column align-items-start">
+								<div class="d-flex w-100 justify-content-between">
+									<h6 class="mb-1">{{ item.name }}</h6>
+									<small class="text-muted">{{ item.time }}</small>
+								</div>
+							</div>
+						{% endif %}
+
+						{% if item.type == "connection" and item.name == "bike" %}
+							<div class="list-group-item flex-column align-items-start">
+								<div class="d-flex w-100 justify-content-center">
+									<small>{{ item.name }} for {{ item.time }} mins</small>
+								</div>
+							</div>
+						{% endif %}
+
+					{% endfor %}
+
+				</div>
+			</div>
+		</div>
+	{% endif %}
+
+	<br><br>
+
+	<div class="row justify-content-center">
+		<div class="col col-lg-4 col-md-6 col-sm-8">
+			<a class="btn btn-light" href="{% url 'app_directions:search' %}" role="button" style="width:100%;">New Search</a>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12"><hr></div>
+	</div>
+
+{% endblock %}
