@@ -41,13 +41,13 @@ def result(request):
 	# Check data
 	redirect_back = False
 	try:
-		from_coordinate = request.POST["input_from_loc"]
+		from_coordinate = request.POST["input_name_from_coords"]
 	except:
 		messages.error(request, 'Start location incorrect.')
 		redirect_back = True
 
 	try:
-		to_coordinate = request.POST["input_to_loc"]
+		to_coordinate = request.POST["input_name_to_coords"]
 	except:
 		messages.error(request, 'Destination location incorrect.')
 		redirect_back = True

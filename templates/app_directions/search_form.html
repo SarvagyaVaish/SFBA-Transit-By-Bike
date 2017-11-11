@@ -39,8 +39,10 @@
 	{# Form #}
 	<form action="{% url 'app_directions:result' %}" method="post">
 		{% csrf_token %}
-		<input type="hidden" id="input-from-loc" name="input_from_loc">
-		<input type="hidden" id="input-to-loc" name="input_to_loc">
+		<input type="text" id="input-field-from-coords" name="input_name_from_coords">
+		<input type="text" id="input-field-to-coords" name="input_name_to_coords">
+		<input type="text" id="input-field-from-text" name="input_name_from_text">
+		<input type="text" id="input-field-to-text" name="input_name_to_text">
 
 		{# Time field #}
 		<div class="row justify-content-center">
@@ -82,12 +84,15 @@
 					// User entered the name of a Place that was not suggested and
 					// pressed the Enter key, or the Place Details request failed.
 					// window.alert("No details available for input: '" + place.name + "'");
+					document.getElementById('input-field-from-coords').value = ""
+					document.getElementById('input-field-from-text').value = ""
 					return;
 				}
 
 				full_address = place.formatted_address;
 				from_coordinates = place.geometry.location.lat().toString() + "," + place.geometry.location.lng().toString();
-				document.getElementById('input-from-loc').value = from_coordinates
+				document.getElementById('input-field-from-coords').value = from_coordinates
+				document.getElementById('input-field-from-text').value = full_address
 			});
 
 
@@ -100,12 +105,15 @@
 					// User entered the name of a Place that was not suggested and
 					// pressed the Enter key, or the Place Details request failed.
 					// window.alert("No details available for input: '" + place.name + "'");
+					document.getElementById('input-field-to-coords').value = ""
+					document.getElementById('input-field-to-text').value = ""
 					return;
 				}
 
 				full_address = place.formatted_address;
 				to_coordinates = place.geometry.location.lat().toString() + "," + place.geometry.location.lng().toString();
-				document.getElementById('input-to-loc').value = to_coordinates
+				document.getElementById('input-field-to-coords').value = to_coordinates
+				document.getElementById('input-field-to-text').value = full_address
 			});
 
 
