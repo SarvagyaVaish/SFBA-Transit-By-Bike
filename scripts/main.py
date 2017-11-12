@@ -13,14 +13,14 @@ def cmp_solutions(a, b):
     dest_a = a[-1]
     dest_b = b[-1]
     if dest_a["arrival_time"] < dest_b["arrival_time"]:
-        return 1
-    elif dest_a["arrival_time"] > dest_b["arrival_time"]:
         return -1
+    elif dest_a["arrival_time"] > dest_b["arrival_time"]:
+        return 1
     else:
         if dest_a["cost"] < dest_b["cost"]:
-            return 1
-        elif dest_a["cost"] > dest_b["cost"]:
             return -1
+        elif dest_a["cost"] > dest_b["cost"]:
+            return 1
         else:
             return 0
 
@@ -44,7 +44,7 @@ def cmp_to_key(mycmp):
     return K
 
 
-def find_routes(departure_coordinate, arrival_coordinate, departure_time):
+def find_routes(departure_coordinate, arrival_coordinate, departure_time, schedule):
     """
     :param departure_coordinate:  tuple of (lat, long)
     :param arrival_coordinate: tuple of (lat, long)
@@ -53,7 +53,7 @@ def find_routes(departure_coordinate, arrival_coordinate, departure_time):
     """
 
     # Load transit models
-    caltrain = CaltrainModel()
+    caltrain = CaltrainModel(schedule)
 
     # Create basic nodes
     departure_node = Node(modes=["bike"], id="departure", name="Departure", direction="",

@@ -77,12 +77,17 @@ def get_service_and_trip_information():
 
 
 class CaltrainModel:
-    def __init__(self):
+    def __init__(self, schedule="weekday"):
         self.nodes = create_nodes()
         self.connections = []
 
         service_dict = get_service_and_trip_information()
-        trip_ids = service_dict['CT-17OCT-Combo-Weekday-01']  # Use weekday schedule
+        if schedule == "saturday":
+            trip_ids = service_dict['CT-17OCT-Caltrain-Mixed-03']
+        elif schedule == "sunday":
+            trip_ids = service_dict['CT-17OCT-Caltrain-Sunday-01']
+        else:  # Use weekday schedule by default
+            trip_ids = service_dict['CT-17OCT-Combo-Weekday-01']
 
         for trip_id in trip_ids:
             self.connections += create_connections(self.nodes, trip_id)

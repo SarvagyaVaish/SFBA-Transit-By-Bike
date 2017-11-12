@@ -37,11 +37,13 @@ def api(request):
 	from_coordinate = request.GET.get('from_loc', '')
 	to_coordinate = request.GET.get('to_loc', '')
 	start_time = request.GET.get('start_time', '')
+	schedule = request.GET.get('schedule', '')
 
 	solutions = find_routes(
 			get_lat_lon_tuple(from_coordinate),
 			get_lat_lon_tuple(to_coordinate),
-			start_time
+			start_time,
+			schedule,
 		)
 
 	context = {
@@ -97,6 +99,14 @@ def result(request):
 		messages.error(request, 'Start time incorrect.')
 		redirect_back = True
 
+	try:
+		schedule = request.POST["input_schedule"]
+		if schedule not in ["weekday", "saturday", "sunday"]:
+			raise "incorrect schedule"
+	except:
+		messages.error(request, 'Schedule incorrect.')
+		redirect_back = True
+
 	if not redirect_back:
 		if len(from_coordinate) == 0:
 			messages.error(request, 'Start location empty.')
@@ -118,7 +128,8 @@ def result(request):
 	solutions = find_routes(
 			get_lat_lon_tuple(from_coordinate),
 			get_lat_lon_tuple(to_coordinate),
-			start_time
+			start_time,
+			schedule,
 		)
 
 	context = {
