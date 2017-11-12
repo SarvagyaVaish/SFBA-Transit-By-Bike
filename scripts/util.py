@@ -67,7 +67,7 @@ def biking_duration_bw_nodes(node1, node2):
         # print "WARN: fallback to simple biking duration"
         # Fallback on rough estimate using avg speed
         dist = straight_line_dist_bw_nodes(node1, node2)
-        duration = max(5, int(dist / BIKE_SPEED_M_PER_MIN))
+        duration = int(dist / BIKE_SPEED_M_PER_MIN)
 
     return duration
 
