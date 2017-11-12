@@ -20,8 +20,8 @@
 	<div class="row justify-content-center">
 		<div class="col col-lg-6 col-md-8 col-sm-10">
 			<div class="form-group">
-				<label for="from-ac-input">Start location</label>
-				<input id="from-ac-input" type="text" placeholder="Enter an address within the bay area" class="form-control">
+				<label for="from-autocomplete">Start location</label>
+				<input id="from-autocomplete" type="text" placeholder="Enter an address within the bay area" class="form-control">
 			</div>
 		</div>
 	</div>
@@ -30,8 +30,8 @@
 	<div class="row justify-content-center">
 		<div class="col col-lg-6 col-md-8 col-sm-10">
 			<div class="form-group">
-				<label for="to-ac-input">Destination location</label>
-				<input id="to-ac-input" type="text" placeholder="Enter an address within the bay area" class="form-control">
+				<label for="to-autocomplete">Destination location</label>
+				<input id="to-autocomplete" type="text" placeholder="Enter an address within the bay area" class="form-control">
 			</div>
 		</div>
 	</div>
@@ -76,7 +76,7 @@
 
 
 			// Setup from field
-			var from_input = document.getElementById('from-ac-input');
+			var from_input = document.getElementById('from-autocomplete');
 			var from_autocomplete = new google.maps.places.Autocomplete(from_input, options);
 			from_autocomplete.addListener('place_changed', function() {
 				var place = from_autocomplete.getPlace();
@@ -97,7 +97,7 @@
 
 
 			// Setup to field
-			var to_input = document.getElementById('to-ac-input');
+			var to_input = document.getElementById('to-autocomplete');
 			var to_autocomplete = new google.maps.places.Autocomplete(to_input, options);
 			to_autocomplete.addListener('place_changed', function() {
 				var place = to_autocomplete.getPlace();
@@ -128,38 +128,44 @@
 			// Setup from and to fields with previous values
 			{% if from_address %}
 				// Get coordinates and fill in previous address
-				var geocoder = new google.maps.Geocoder();
-				geocoder.geocode( { 'address': "{{from_address}}"}, function(results, status) {
+				var from_geocoder = new google.maps.Geocoder();
+				from_geocoder.geocode( { 'address': "{{from_address}}"}, function(results, status) {
 					if (status == 'OK') {
 						from_coordinates = results[0].geometry.location.lat().toString() + "," + results[0].geometry.location.lng().toString();
+						$("#from-autocomplete").val("{{from_address}}")
 						document.getElementById('input-field-from-coords').value = from_coordinates
-						$("#from-ac-input").val("{{from_address}}")
+						document.getElementById('input-field-from-text').value = "{{from_address}}"
 					} else {
 						console.log('Geocode was not successful for the following reason: ' + status);
+						document.getElementById('input-field-from-coords').value = ""
+						document.getElementById('input-field-from-text').value = ""
 					}
 				});
 
 				// Let user easily select all by clicking in the field
-				$("#from-ac-input").click(function () {
+				$("#from-autocomplete").click(function () {
 					$(this).select();
 				});
 			{% endif %}
 
 			{% if to_address %}
 				// Get coordinates and fill in previous address
-				var geocoder = new google.maps.Geocoder();
-				geocoder.geocode( { 'address': "{{to_address}}"}, function(results, status) {
+				var to_geocoder = new google.maps.Geocoder();
+				to_geocoder.geocode( { 'address': "{{to_address}}"}, function(results, status) {
 					if (status == 'OK') {
 						to_coordinates = results[0].geometry.location.lat().toString() + "," + results[0].geometry.location.lng().toString();
+						$("#to-autocomplete").val("{{to_address}}")
 						document.getElementById('input-field-to-coords').value = to_coordinates
-						$("#to-ac-input").val("{{to_address}}")
+						document.getElementById('input-field-to-text').value = "{{to_address}}"
 					} else {
 						console.log('Geocode was not successful for the following reason: ' + status);
+						document.getElementById('input-field-to-coords').value = ""
+						document.getElementById('input-field-to-text').value = ""
 					}
 				});
 
 				// Let user easily select all by clicking in the field
-				$("#to-ac-input").click(function () {
+				$("#to-autocomplete").click(function () {
 					$(this).select();
 				});
 			{% endif %}

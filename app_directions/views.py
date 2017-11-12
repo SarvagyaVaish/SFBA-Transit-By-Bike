@@ -43,7 +43,18 @@ def api(request):
 			get_lat_lon_tuple(to_coordinate),
 			start_time
 		)
-	return JsonResponse(solutions)
+
+	context = {
+		"input" : {
+			"from_coordinate" : get_lat_lon_tuple(from_coordinate),
+			"to_coordinate" : get_lat_lon_tuple(to_coordinate),
+			"start_time" : start_time,
+		},
+		"solution_count" : len(solutions),
+		"solutions" : solutions
+	}
+
+	return JsonResponse(context)
 
 
 def search(request):

@@ -6,7 +6,42 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-NUMBER_OF_SOLUTIONS = 1
+NUMBER_OF_SOLUTIONS = 10
+
+
+def cmp_solutions(a, b):
+    dest_a = a[-1]
+    dest_b = b[-1]
+    if dest_a["arrival_time"] < dest_b["arrival_time"]:
+        return 1
+    elif dest_a["arrival_time"] > dest_b["arrival_time"]:
+        return -1
+    else:
+        if dest_a["cost"] < dest_b["cost"]:
+            return 1
+        elif dest_a["cost"] > dest_b["cost"]:
+            return -1
+        else:
+            return 0
+
+def cmp_to_key(mycmp):
+    'Convert a cmp= function into a key= function'
+    class K:
+        def __init__(self, obj, *args):
+            self.obj = obj
+        def __lt__(self, other):
+            return mycmp(self.obj, other.obj) < 0
+        def __gt__(self, other):
+            return mycmp(self.obj, other.obj) > 0
+        def __eq__(self, other):
+            return mycmp(self.obj, other.obj) == 0
+        def __le__(self, other):
+            return mycmp(self.obj, other.obj) <= 0
+        def __ge__(self, other):
+            return mycmp(self.obj, other.obj) >= 0
+        def __ne__(self, other):
+            return mycmp(self.obj, other.obj) != 0
+    return K
 
 
 def find_routes(departure_coordinate, arrival_coordinate, departure_time):
@@ -50,7 +85,7 @@ def find_routes(departure_coordinate, arrival_coordinate, departure_time):
 
     closed_set = []
     solutions_count = 0
-    solutions = {}
+    solutions = []
 
     while len(open_set) > 0:
         # Get next node to explore
@@ -67,7 +102,7 @@ def find_routes(departure_coordinate, arrival_coordinate, departure_time):
 
         # Check for goal
         if current_node.id == final_node_id:
-            # logger.warn("\nFound solution: " + str(current_node))
+            # logger.warn("\nFound solution:\n" + str(current_node.json_representation()))
             current_solution_json = []
             solution_node = current_node
             wait_at_previous_node = 0
@@ -82,7 +117,7 @@ def find_routes(departure_coordinate, arrival_coordinate, departure_time):
                 solution_node = solution_node.from_node
 
             current_solution_json.reverse()
-            solutions[solutions_count] = current_solution_json
+            solutions.append(current_solution_json)
 
             solutions_count += 1
             if solutions_count < NUMBER_OF_SOLUTIONS:
@@ -97,9 +132,7 @@ def find_routes(departure_coordinate, arrival_coordinate, departure_time):
             # Find connections from current node
             relevant_connections = []
             for connection in all_connections:
-                # logger.warn("checking connection: " + str(connection.start_node_id + " == " + str(current_node.id)))
                 if connection.start_node_id == current_node.id:
-                    # logger.warn("-- accepted")
                     relevant_connections.append(connection)
 
             # Find connections that are still possible
@@ -166,7 +199,7 @@ def find_routes(departure_coordinate, arrival_coordinate, departure_time):
             time_waiting = connection.start_time - current_node.arrival_time
             time_moving = connection.end_time - connection.start_time
             bike_penalty = 1.0 if connection.mode == "bike" else 1.0
-            waiting_penalty = 1.0 if current_node.first_dest_node else 1.0
+            waiting_penalty = 0.0 if current_node.first_dest_node else 1.0
             new_node.cost = current_node.cost + time_moving * bike_penalty + time_waiting * waiting_penalty
 
             new_node.time_waiting = time_waiting
@@ -202,5 +235,8 @@ def find_routes(departure_coordinate, arrival_coordinate, departure_time):
         # logger.warn("\nOpen set")
         # for node in open_set:
         #     logger.warn(str(node))
+
+    # Sort solutions based on arrival time
+    solutions.sort(key=cmp_to_key(cmp_solutions))
 
     return solutions
