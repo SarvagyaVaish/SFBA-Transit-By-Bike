@@ -51,12 +51,32 @@
 
 	<div class="row justify-content-center">
 		<div class="col col-lg-4 col-md-6 col-sm-8">
-			<a class="btn btn-light" href="{% url 'app_directions:search' %}" role="button" style="width:100%;">New Search</a>
+
+			<div class="row justify-content-center">
+				<div class="col col-6">
+					<a class="btn btn-primary" href="{% url 'app_directions:search' %}" role="button" style="width:100%;">New Search</a>
+				</div>
+				<div class="col col-6">
+					<button onclick="copyToClipboard('sfba-on-bike.herokuapp.com/directions/api?from_loc={{input.from_coordinate.0}},{{input.from_coordinate.1}}&to_loc={{input.to_coordinate.0}},{{input.to_coordinate.1}}&start_time={{input.start_time}}&schedule={{input.schedule}}')" id="share_button" class="btn btn-light border border-primary" role="button" style="width:100%;">Share</button>
+				</div>
+			</div>
+
 		</div>
 	</div>
 
 	<div class="row">
 		<div class="col-md-12"><hr></div>
 	</div>
+
+	<script type="text/javascript">
+		function copyToClipboard(text) {
+			var $temp = $("<input>");
+			$("body").append($temp);
+			$temp.val(text).select();
+			document.execCommand("copy");
+			$temp.remove();
+			$("#share_button").text("Copied!");
+		}
+	</script>
 
 {% endblock %}

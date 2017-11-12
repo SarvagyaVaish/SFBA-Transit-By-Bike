@@ -137,6 +137,7 @@ def result(request):
 			"from_coordinate" : get_lat_lon_tuple(from_coordinate),
 			"to_coordinate" : get_lat_lon_tuple(to_coordinate),
 			"start_time" : start_time,
+			"schedule" : schedule
 		},
 		"solution_count" : len(solutions),
 	}
