@@ -56,7 +56,8 @@ def find_routes(departure_coordinate, arrival_coordinate, departure_time):
         # Get next node to explore
         current_node = Node.cheapest_node(
             open_set,
-            h_func=heuristic_time_to_destination(Node.find_node_by_id("arrival"))
+            h_func=None,
+            # h_func=heuristic_time_to_destination(Node.find_node_by_id("arrival"))
         )
 
         # logger.warn("\n----\n\nCurrent node: " + str(current_node))
