@@ -59,14 +59,14 @@ def find_routes(departure_coordinate, arrival_coordinate, departure_time):
             h_func=heuristic_time_to_destination(Node.find_node_by_id("arrival"))
         )
 
-        logger.warn("\n----\n\nCurrent node: " + str(current_node))
+        # logger.warn("\n----\n\nCurrent node: " + str(current_node))
 
         open_set.remove(current_node)
         closed_set.append(current_node)
 
         # Check for goal
         if current_node.id == final_node_id:
-            logger.warn("\nFound solution: " + str(current_node))
+            # logger.warn("\nFound solution: " + str(current_node))
             current_solution_json = []
             solution_node = current_node
             wait_at_previous_node = 0
@@ -145,9 +145,9 @@ def find_routes(departure_coordinate, arrival_coordinate, departure_time):
 
             current_node.connections += pruned_connections
 
-        logger.warn("\nNew connections: ")
-        for connection in current_node.connections:
-            logger.warn(str(connection))
+        # logger.warn("\nNew connections: ")
+        # for connection in current_node.connections:
+        #     logger.warn(str(connection))
 
         # Iterate over connections and add nodes
         new_nodes = []
@@ -173,9 +173,9 @@ def find_routes(departure_coordinate, arrival_coordinate, departure_time):
 
             new_nodes.append(new_node)
 
-        logger.warn("\nNew nodes")
-        for new_node in new_nodes:
-            logger.warn(str(new_node))
+        # logger.warn("\nNew nodes")
+        # for new_node in new_nodes:
+        #     logger.warn(str(new_node))
 
         # Add new node to open set
         open_set += new_nodes
@@ -198,8 +198,8 @@ def find_routes(departure_coordinate, arrival_coordinate, departure_time):
                 prev_node = curr_node
         open_set = unique_open_set
 
-        logger.warn("\nOpen set")
-        for node in open_set:
-            logger.warn(str(node))
+        # logger.warn("\nOpen set")
+        # for node in open_set:
+        #     logger.warn(str(node))
 
     return solutions
