@@ -39,10 +39,10 @@
 	{# Form #}
 	<form action="{% url 'app_directions:result' %}" method="post">
 		{% csrf_token %}
-		<input type="text" id="input-field-from-coords" name="input_name_from_coords">
-		<input type="text" id="input-field-to-coords" name="input_name_to_coords">
-		<input type="text" id="input-field-from-text" name="input_name_from_text">
-		<input type="text" id="input-field-to-text" name="input_name_to_text">
+		<input type="hidden" id="input-field-from-coords" name="input_name_from_coords">
+		<input type="hidden" id="input-field-to-coords" name="input_name_to_coords">
+		<input type="hidden" id="input-field-from-text" name="input_name_from_text">
+		<input type="hidden" id="input-field-to-text" name="input_name_to_text">
 
 		{# Time field #}
 		<div class="row justify-content-center">
@@ -124,6 +124,50 @@
 		    if(h < 10) h = '0' + h;
 		    if(m < 10) m = '0' + m;
 		    document.getElementById('input-start-time').value = h + ":" + m
+
+			// Setup from and to fields with previous values
+			{% if from_address %}
+				console.log("from_address")
+
+				// Get coordinates and fill in previous address
+				var geocoder = new google.maps.Geocoder();
+				geocoder.geocode( { 'address': "{{from_address}}"}, function(results, status) {
+					if (status == 'OK') {
+						from_coordinates = results[0].geometry.location.lat().toString() + "," + results[0].geometry.location.lng().toString();
+						document.getElementById('input-field-from-coords').value = from_coordinates
+						$("#from-ac-input").val("{{from_address}}")
+					} else {
+						console.log('Geocode was not successful for the following reason: ' + status);
+					}
+				});
+
+				// Let user easily select all by clicking in the field
+				$("#from-ac-input").click(function () {
+					$(this).select();
+				});
+			{% endif %}
+
+			{% if to_address %}
+				console.log("to_address")
+
+				// Get coordinates and fill in previous address
+				var geocoder = new google.maps.Geocoder();
+				geocoder.geocode( { 'address': "{{to_address}}"}, function(results, status) {
+					if (status == 'OK') {
+						to_coordinates = results[0].geometry.location.lat().toString() + "," + results[0].geometry.location.lng().toString();
+						document.getElementById('input-field-to-coords').value = to_coordinates
+						$("#to-ac-input").val("{{to_address}}")
+					} else {
+						console.log('Geocode was not successful for the following reason: ' + status);
+					}
+				});
+
+				// Let user easily select all by clicking in the field
+				$("#to-ac-input").click(function () {
+					$(this).select();
+				});
+			{% endif %}
+
 		}
 	</script>
 

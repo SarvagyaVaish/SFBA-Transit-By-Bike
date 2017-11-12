@@ -6,6 +6,9 @@ from django.contrib import messages
 
 from scripts.main import find_routes
 
+import logging
+logger = logging.getLogger(__name__)
+
 
 # Helper function
 def get_lat_lon_tuple(coordinate_str):
@@ -14,6 +17,16 @@ def get_lat_lon_tuple(coordinate_str):
 	lon = float(coordinates[1])
 	coordinate_tuple = (lat, lon)
 	return coordinate_tuple
+
+
+def log_session(session):
+	# Print current session variables
+	for key in session.keys():
+		logger.warn("{}, {}".format(key, session[key]))
+
+
+def flush_session(session):
+	session.flush()
 
 
 def index(request):
@@ -34,7 +47,14 @@ def api(request):
 
 
 def search(request):
-	return render(request, 'app_directions/search_form.html')
+	# flush_session(request.session)
+	context = {}
+	if "from_address" in request.session:
+		context["from_address"] = request.session["from_address"]
+	if "to_address" in request.session:
+		context["to_address"] = request.session["to_address"]
+	log_session(request.session)
+	return render(request, 'app_directions/search_form.html', context)
 
 
 def result(request):
@@ -42,12 +62,20 @@ def result(request):
 	redirect_back = False
 	try:
 		from_coordinate = request.POST["input_name_from_coords"]
+		# Save from addresses in session
+		from_text = request.POST["input_name_from_text"]
+		if from_text != "":
+			request.session["from_address"] = from_text
 	except:
 		messages.error(request, 'Start location incorrect.')
 		redirect_back = True
 
 	try:
 		to_coordinate = request.POST["input_name_to_coords"]
+		# Save to addresses in session
+		to_text = request.POST["input_name_to_text"]
+		if to_text != "":
+			request.session["to_address"] = to_text
 	except:
 		messages.error(request, 'Destination location incorrect.')
 		redirect_back = True
@@ -74,6 +102,7 @@ def result(request):
 	if redirect_back:
 		return HttpResponseRedirect("/directions")
 
+	# Find solution
 	start_time = start_time + ":00"
 	solutions = find_routes(
 			get_lat_lon_tuple(from_coordinate),
