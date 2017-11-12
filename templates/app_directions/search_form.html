@@ -127,8 +127,6 @@
 
 			// Setup from and to fields with previous values
 			{% if from_address %}
-				console.log("from_address")
-
 				// Get coordinates and fill in previous address
 				var geocoder = new google.maps.Geocoder();
 				geocoder.geocode( { 'address': "{{from_address}}"}, function(results, status) {
@@ -148,8 +146,6 @@
 			{% endif %}
 
 			{% if to_address %}
-				console.log("to_address")
-
 				// Get coordinates and fill in previous address
 				var geocoder = new google.maps.Geocoder();
 				geocoder.geocode( { 'address': "{{to_address}}"}, function(results, status) {

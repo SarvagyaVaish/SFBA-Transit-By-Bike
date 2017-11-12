@@ -165,6 +165,7 @@ class Node:
                 waiting_time=self.time_waiting,
                 moving_time=self.time_moving,
                 arrival_mode=self.from_mode,
+                cost=self.cost,
             )
 
     @classmethod
